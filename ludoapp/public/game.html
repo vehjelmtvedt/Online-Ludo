@@ -5,51 +5,64 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Ludo Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/game.css">
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 </head>
 <body>
 
     <header>
-        <img src="images/logo_green.png">
-        <h3>Time Elapsed: 02:23</h3> <!--Time will be updated in JS script every second-->
+        <div class="logosection">
+            <img id="logo" src="images/logo_green.png">
+        </div>
+
+        <div class="timeelapsed">
+            <h1>Ludo!</h3>
+            <h3>Time Elapsed: 02:23</h3> <!--Time will be updated in JS script every second-->
+        </div> 
+        <div class="temp">
+
+        </div>
     </header>
 
     <main>
         <div class="gameboard">
-            <img src="images/gameboard.jpeg">
+            <img id="gameboard" src="images/gameboard.jpeg">
         </div>
 
         <div class="gameinfo">
-            <ul>
-                <li><div class="player1">
-                    <h3>Player 1</h3>
-                    <div class="diceandplayer">
-                        <img src="images/playericon.png">
-                        <img src="images/diceicon.png">
-                    </div>
-                </div></li>
-                <li><div class="player2">
-                    <h3>Player 2</h3>
-                    <div class="diceandplayer">
-                        <img src="images/playericon.png">
-                        <img src="images/diceicon.png">
-                    </div>
-                </div></li>
-                <li><div class="player3">
-                    <h3>Player 3</h3>
-                    <div class="diceandplayer">
-                        <img src="images/playericon.png">
-                        <img src="images/diceicon.png">
-                    </div>
-                </div></li>
-                <li><div class="player3">
-                    <h3>Player 4</h3>
-                    <div class="diceandplayer">
-                        <img src="images/playericon.png">
-                        <img src="images/diceicon.png">
-                    </div>
-                </div></li>
 
-            </ul>
+            <div class="player1">
+                <h3>Player 1</h3>
+                <div class="diceandplayer">
+                    <img class="playericon" src="images/playericon.png">
+                    <img class="diceicon" src="images/diceicon.png">
+                </div>
+            </div>
+
+            <div class="player2">
+                <h3>Player 2</h3>
+                <div class="diceandplayer">
+                    <img class="playericon" src="images/playericon.png">
+                    <img class="diceicon" src="images/diceicon.png">
+                </div>
+            </div>
+
+            <div class="player3">
+                <h3>Player 3</h3>
+                <div class="diceandplayer">
+                    <img class="playericon" src="images/playericon.png">
+                    <img class="diceicon" src="images/diceicon.png">
+                </div>
+            </div>
+            
+            
+            <div class="player4">
+                <h3>Player 4</h3>
+                <div class="diceandplayer">
+                    <img class="playericon" src="images/playericon.png">
+                    <img class="diceicon" src="images/diceicon.png">
+                </div>
+            </div>
         </div>
     </main>
 

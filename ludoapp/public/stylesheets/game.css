@@ -1,0 +1,114 @@
+/* General */
+
+body {
+    background-color: rgb(192, 227, 28);
+    width: 100%;
+}
+
+ul {
+    list-style-type: none;;
+}
+
+main {
+    width: 100%;
+    
+}
+
+/* Header section */
+
+div.logosection {
+    float: left;
+    width: 33%;
+    height: 300px; 
+}
+
+#logo {
+    max-width: 300px;
+}
+
+div.timeelapsed {
+    display: inline-block;
+    margin: 0 auto;
+    width: 33%;
+    height: 300px;
+    
+    font-family: 'Lobster', cursive;
+    position: relative;
+}
+
+div.timeelapsed h3 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 50px;
+}
+
+div.timeelapsed h1 {
+    position: relative;
+    font-size: 90px;
+}
+
+div.temp {
+    float: right;
+    width: 33%;
+    height: 300px;
+}
+
+header {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 50px;
+}
+
+/* Game section */
+
+div.gameboard {
+    width: 70%;
+    float: left;
+    height: 700px;
+    margin-left: 110px;
+}
+
+#gameboard {
+    width: 100%;
+}
+
+div.gameinfo {
+    
+    width: 20%;
+    float: left;
+    background: gray;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    height: 1310px;
+}
+
+.player1 {
+    background-color: orange;
+    height: 310px; 
+}
+
+.player2 {
+    background-color: blue;
+    height: 310px;
+}
+
+.player3 {
+    background-color: green;
+    height: 310px;
+}
+
+.player4 {
+    background-color: yellow;
+    height: 310px;
+}
+
+.playericon {
+    width: 150px;
+}
+
+.diceicon {
+    width: 150px;
+}
