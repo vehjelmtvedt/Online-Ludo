@@ -6,6 +6,7 @@
     <title>Online Ludo Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/splash.css">
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 </head>
 <body>
 
@@ -20,19 +21,19 @@
         </div>
            
         <div class="second_image">
-            <img src="images/family.png">
+            <img id="family" src="images/family.png">
         </div>
     </header>
 
     <main>
-        <div class="play">
+        <a href="game.html"><div class="play">
             <div class="playtext">
                 <h3>Play</h3>
             </div>
             <div class="playbutton">
-                <img src="images/playbutton.png">
+                <img id="playbutton" src="images/playbutton.png">
             </div>
-        </div>
+        </div></a>
 
         <div class="statistics">
             <div class="statstext">
@@ -40,11 +41,11 @@
             </div>
 
             <div class="statspicture">
-                <img src="images/statsimage.png">
+                <img id="statsimage" src="images/statsimage.png">
             </div>
-            <div class="buttons">
-                <img src="images/arrow_stats.png">
-                <img src="images/arrow_stats.png"> <!---Rotate 180 degrees-->
+            <div class="navbuttons">
+                <img id="navbuttons1" src="images/arrow_stats.png">
+                <img id="navbuttons2" src="images/arrow_stats.png"> <!---Rotate 180 degrees-->
             </div>
         </div>
 
@@ -52,9 +53,9 @@
             <div class="howtotext">
                 <h3>How to Play</h3>
             </div>
-            <div class="howtobutton">
-                <img src="images/questionmark.png">
-            </div>
+            <a href="howto.html"><div class="howtobutton">
+                <img id="questionmark" src="images/questionmark.png">
+            </div></a>
             
         </div>
     </main>
