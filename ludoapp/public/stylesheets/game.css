@@ -109,6 +109,18 @@ div.gameinfo {
     width: 150px;
 }
 
-.diceicon {
+#diceicon1 {
+    width: 150px;
+}
+
+#diceicon2 {
+    width: 150px;
+}
+
+#diceicon3 {
+    width: 150px;
+}
+
+#diceicon4 {
     width: 150px;
 }
