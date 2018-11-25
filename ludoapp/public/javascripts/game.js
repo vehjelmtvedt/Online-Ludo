@@ -1,6 +1,8 @@
 var main = function() {
     "use strict";
 
+    
+
     let name = prompt("Please enter your name: ", "Player 1");
     
     $("div.player1 h3").text(name); 
@@ -36,6 +38,7 @@ var player = ( function() {
     var figurinesInHome = 4;
     var figurinesInFinish = 0;
     var playerID = 1;
+    
 
     return {
         setName : function(nameIn) {
