@@ -1,105 +1,70 @@
-var main = function() {
-    "use strict";
+var game = function(gameID) {
+    this.playerA = null;
+    this.playerB = null;
+    this.playerC = null;
+    this.playerD = null;
+    this.id = gameID;
+    this.gameState = "0 JOINED";
+    this.currentPlayer = null;
 
-    
-
-    let name = prompt("Please enter your name: ", "Player 1");
-    
-    $("div.player1 h3").text(name); 
-    
-
-    $("#diceicon1").on("click", function (event) {
-        diceRoll();
-    });
-
-    player.setName(name);
-
-
-    
 };
 
-$(document).ready(main);
+game.prototype.transitionStates = {};
+game.prototype.transitionStates["0 JOINED"] = 0;
+game.prototype.transitionStates["1 JOINED"] = 1;
+game.prototype.transitionStates["2 JOINED"] = 2;
+game.prototype.transitionStates["3 JOINED"] = 3;
+game.prototype.transitionStates["4 JOINED"] = 4;
+game.prototype.transitionStates["PLAYER DONE"] = 5;
+game.prototype.transitionStates["PLAYER1"] = 6; //A won
+game.prototype.transitionStates["PLAYER2"] = 7; //A won
+game.prototype.transitionStates["PLAYER3"] = 8; //A won
+game.prototype.transitionStates["PLAYER4"] = 9; //A won
+game.prototype.transitionStates["ABORTED"] = 10;
 
-var diceRoll = function() {
-    var diceResult = Math.floor(Math.random() * 6) + 1;
-    $("#diceicon1").attr("src", "images/" + diceResult + ".png");
-       
-    return diceResult;
-};
+game.prototype.getCurrentPlayer() {
+    return this.currentPlayer;
+}
 
+game.prototype.hasFourConnectedPlayers = function() {
+    return (this.gameState == "4 JOINED");
+}
 
+game.prototype.addPlayer = function(player) {
+    console.assert(p instanceof Object);
 
-
-var player = ( function() {
-
-    let name;
-    let currentTurns = 0;
-    var figurinesOnTable = 0;
-    var figurinesInHome = 4;
-    var figurinesInFinish = 0;
-    var playerID = 1;
-    
-
-    return {
-        setName : function(nameIn) {
-            name = nameIn;
-        },
-        getName : function() {
-            return name;
-        },
-        setCurrentTurns : function(turnsIn) {
-            currentTurns = turnsIn;
-        },
-        getCurrentTurns : function() {
-            return currentTurns;
-        },
-        getFigurinesOnTable : function() {
-            return figurinesOnTable;
-        },
-        incFigurinesOnTable : function() {
-            figurinesOnTable++;
-        },
-        decFigurinesOnTable : function() {
-            figurinesOnTable--;
-        },
-        getFigurinesInHome : function() {
-            return figurinesInHome;
-        },
-        incFigurinesInHome : function() {
-            figurinesInHome++;
-        },
-        decFigurinesInHome : function() {
-            figurinesInHome--;
-        },
-        getFigurinesInFinish : function() {
-            return figurinesInFinish;
-        },
-        incFigurinesInFinish : function() {
-            figurinesInFinish++;
-        },
-        setPlayerID : function(playerIDIn) {
-            playerID = playerIDIn;
-        },
-        getPlayerID : function() {
-            return playerID;
-        }
-
-
+    if (this.gameState != "1 JOINED" && this.gameState != "2 JOINED" && this.gameState != "3 JOINED" && this.gameState != "4 JOINED") {
+        return new Error("Lobby is full, current state is %s", this.gameState);
     }
-})();
 
-var figurine = ( function() {
-    var isAbleToMove = false;
-    var position = 0;
-    var onAnotherPiece = true;
-    var killedByAnotherPiece = 0;
-    var color = "blue";
-    var ownedBy = 1;
-})();
+    if (this.playerA == null) {
+        this.playerA = p;
+        return "A";
+    }
 
-var gameStats = ( function() {
-    var currentPlayerTurn = 0;
-})();
+    else if (this.playerB == null) {
+        this.playerB = p;
+        return "B";
+    }
 
- 
+    else if (this.playerC == null) {
+        this.playerC = p;
+        return "C";
+    }
+
+    else {
+        this.playerD = p;
+        return "D";
+    }
+};
+
+module.exports = game;
+
+
+
+
+
+
+
+
 

@@ -14,6 +14,10 @@ app.get("/", (req, res) => {
     res.render("splash.ejs");
 });
 
+app.get("/play", (req, res) => {
+    res.render("game.ejs");
+});
+
 var server = http.createServer(app);
 
 
