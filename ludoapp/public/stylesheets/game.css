@@ -53,6 +53,7 @@ section.temp {
     float: right;
     width: 33%;
     height: 300px;
+    
 }
 
 header {
@@ -142,6 +143,10 @@ div {
 
 
 /*Styling grid*/
+
+#c7-1 {
+    background-image: "url('/Users/vetle/Desktop/Web and Database Technology/Ludo-Project/ludoapp/public/images/figurine_blue.jpg')";
+}
 
 /*Row 1*/
 
