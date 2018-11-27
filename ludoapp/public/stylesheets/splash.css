@@ -120,6 +120,16 @@ div.howto {
     display: block;
 }
 
+.slideshow {
+    max-width:200px;
+    margin: auto;
+    display: block;
+    height: 150px;
+    
+}
+
+
+
 #navbuttons1 {
     margin-top: 10px;
     max-width: 90px;

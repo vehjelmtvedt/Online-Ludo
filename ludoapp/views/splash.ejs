@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/splash.css">
     <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
-</head>
+    <script src="https://www.w3schools.com/lib/w3.js"></script></head>
 <body>
 
     <header>
@@ -40,14 +40,21 @@
                 <h3>Statistics</h3>
             </div>
 
-            <div class="statspicture">
-                <img id="statsimage" src="images/statsimage.png">
-            </div>
+            <div class="slideshow"><img id="statsimage" src="/images/statsimage.png"></div>
+            <div class="slideshow"><p>Games Played: <br> 5</p></div>
+            <div class="slideshow"><p>Ongoing games: <br> 9</p></div>
+            <div class="slideshow"><p>Online Players: <br> 10</p></div>
             <div class="navbuttons">
-                <img id="navbuttons1" src="images/arrow_stats.png">
-                <img id="navbuttons2" src="images/arrow_stats.png"> <!---Rotate 180 degrees-->
+                <img onclick="myShow.previous()" id="navbuttons1" src="images/arrow_stats.png">
+                <img onclick="myShow.next()" id="navbuttons2" src="images/arrow_stats.png"> <!---Rotate 180 degrees-->
             </div>
+
+            <script>myShow = w3.slideshow(".slideshow", 0);</script>
         </div>
+
+        
+
+        <script>w3.slideshow(".mystats");</script>
 
         <div class="howto">
             <div class="howtotext">
