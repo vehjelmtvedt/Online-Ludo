@@ -4,37 +4,59 @@ var currentPosition2 = -1;
 var currentPosition3 = -1;
 var currentPosition4 = -1;
 var movesLeft = 0;
-var yourTurn = false;
 var yourColor = null;
 var yourRoute = null;
 var yourHome = null;
+var playerNumber = null;
+
 
 var socket = new WebSocket("ws://localhost:3000");
+
+var socketSend = function(message) {
+    return socket.onopen = function() {
+        socket.send(message)
+    }
+}
+
+
+
+
+
+
 socket.onmessage = function(event){
-    if (event.data == "green") {
+    if (event.data == "A") {
+        console.log("you are player A");
         yourColor = "green";
         yourRoute = greenRoute();
         yourHome = greenHome();
         populateBoard();
+        socketSend("this or something");
 
     }
-    else if (event.data == "yellow") {
+    else if (event.data == "B") {
+        console.log("you are player B");
         yourColor = "yellow";
         yourRoute = yellowRoute();
         yourHome = yellowHome();
         populateBoard();
     }
-    else if (event.data == "blue") {
+    else if (event.data == "C") {
+        console.log("you are player C");
         yourColor = "blue";
         yourRoute = blueRoute();
         yourHome = blueHome();
         populateBoard();
     }
-    else if (event.data == "orange") {
-        yourColor = "orange";
+    else if (event.data == "D") {
+        console.log("you are player D");
+        yourColor = "red";
         yourRoute = orangeRoute();
         yourHome = orangeHome();
         populateBoard();
+    }
+    else if (event.data == "turn") {
+        movesLeft = 1;
+        console.log("You have 1 move left");
     }
     
 }
@@ -150,72 +172,100 @@ function sleep(ms) {
 }
 
 function diceRoll() {
+    console.log(movesLeft);
 
-        var diceResult = Math.floor(Math.random()*6+1);
+    if (movesLeft === 0) {
+        return;
+    }
+    var diceResult = Math.floor(Math.random()*6+1);
 
-        var diceIcon = document.getElementById("diceicon1");
-        diceNumber = diceResult;
-        console.log("You rolled: " + diceNumber);
+    var diceIcon = document.getElementById("diceicon1");
+    diceNumber = diceResult;
+    console.log("You rolled: " + diceNumber);
 
         //Dice animation
 
         
 
-        ( async function diceAnimation() {
-            for (let i = 0; i < 10; i++) {
-                var rNumber = Math.floor(Math.random()*6+1);
-                diceIcon.src = `./images/${rNumber}.png`;
-                await sleep(100);
+    ( async function diceAnimation() {
+        for (let i = 0; i < 10; i++) {
+            var rNumber = Math.floor(Math.random()*6+1);
+            diceIcon.src = `./images/${rNumber}.png`;
+            await sleep(100);
                 
                 
-            }
-            diceIcon.src = `./images/${diceNumber}.png`;
+        }
+        diceIcon.src = `./images/${diceNumber}.png`;
         })();
 
-        movesLeft = 1;
+    if (diceNumber === 6) {
+            movesLeft +=1;
+    }
+    else {
+        movesLeft -= 1;
+    }
+        
 }
 
 
 function movePiece(cellID)
 {
     if (movesLeft === 0) {
+        socket.send("Moved"); 
         return;
     }
-
     
     
     
 
     //test if cellID clicked corresponds to current position of any of the figurines. If so, move it. If not, return.
     if (document.getElementById(cellID) === yourRoute[currentPosition1]) {
+        console.log("called");
         moveAnimation(currentPosition1 + diceNumber, currentPosition1);
         restorePositions(currentPosition1 + diceNumber, currentPosition2, currentPosition3, currentPosition4);
         currentPosition1 += diceNumber;
+        if (movesLeft === 0) {
+            socket.send("Moved"); 
+        }
+        
         return;
     }
 
     else if (document.getElementById(cellID) === yourRoute[currentPosition2]) {
+        console.log("called");
         moveAnimation(currentPosition2 + diceNumber, currentPosition2);
         restorePositions(currentPosition1, currentPosition2 + diceNumber, currentPosition3, currentPosition4);
         currentPosition2 += diceNumber;
+        if (movesLeft === 0) {
+            socket.send("Moved"); 
+        }
         return;
     }
 
     else if (document.getElementById(cellID) === yourRoute[currentPosition3]) {
+        console.log("called");
         moveAnimation(currentPosition3 + diceNumber, currentPosition3);
         restorePositions(currentPosition1, currentPosition2, currentPosition3 + diceNumber, currentPosition4);
         currentPosition3 += diceNumber;
+        if (movesLeft === 0) {
+            socket.send("Moved"); 
+        }
         return;
     }
 
     else if (document.getElementById(cellID) === yourRoute[currentPosition4]) {
+        console.log("called");
         moveAnimation(currentPosition4 + diceNumber, currentPosition4);
         restorePositions(currentPosition1, currentPosition2, currentPosition3, currentPosition4 + diceNumber);
         currentPosition4 += diceNumber;
+        if (movesLeft === 0) {
+            socket.send("Moved"); 
+        }
         return;
     }
 
     else {
+        console.log("return");
         return;
     }
     
@@ -242,7 +292,7 @@ function movePiece(cellID)
     };
 
     
-    movesLeft = 0;
+    
 
     function restorePositions(pos1, pos2, pos3, pos4) {
         console.log("restoring positions");
@@ -266,9 +316,11 @@ function movePiece(cellID)
     }
 
     
+    
 }
 
 function movePieceFromHome(cellID) {
+    
     if (diceNumber !== 6) {
         return;
     }
@@ -300,7 +352,7 @@ function movePieceFromHome(cellID) {
     }
 
     
-    movesLeft = 0;
+    
 }
 
 function populateBoard() {

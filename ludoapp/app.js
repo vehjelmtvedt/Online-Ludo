@@ -28,11 +28,17 @@ const wss = new websocket.Server({ server });
 
 wss.on("connection", function(ws) {
     //let's slow down the server response time a bit to make the change visible on the client side
-    
-    console.log("Connection state: "+ ws.readyState);
-    ws.send("yellow");
-    ws.close();
-    console.log("Connection state: "+ ws.readyState);
+    setTimeout(function() {
+        console.log("Connection state: "+ ws.readyState);
+        ws.send("A");
+        ws.send("turn");
+        ws.close();
+        console.log("Connection state: "+ ws.readyState);
+    }, 2000);
+
+    ws.on("message", function incoming(message) {
+        console.log("[LOG] " + message);
+    });
 });
 
 

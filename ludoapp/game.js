@@ -3,10 +3,6 @@ var game = function(gameID) {
     this.playerB = null;
     this.playerC = null;
     this.playerD = null;
-    this.playerARoute = null;
-    this.playerBRoute = null;
-    this.playerCRoute = null;
-    this.playerDRoute = null;
     this.id = gameID;
     this.gameState = "0 JOINED";
     this.currentPlayerTurn = null;
@@ -37,9 +33,7 @@ game.prototype.addPlayer = function (p) {
         return new Error("Invalid call to addPlayer, current state is %s", this.gameState);
     }
 
-    /*
-     * revise the game state
-     */ 
+     
     if (this.playerA == null) {
         this.playerA = p;
         return "A";
