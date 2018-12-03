@@ -191,26 +191,47 @@ socket.onmessage = function(event){
     else if (event.data.includes("MOVEDHOME A")) {
 
         let a = event.data.split(" ");
-        movePieceFromHomeRemote(a[2], "green", greenHome(), greenRoute());
+        movePieceFromHomeRemote(a[2], "green", greenHome(), greenRoute(), "A");
 
     }
     else if (event.data.includes("MOVEDHOME B")) {
 
         let a = event.data.split(" ");
-        movePieceFromHomeRemote(a[2], "yellow", yellowHome(), yellowRoute());
+        movePieceFromHomeRemote(a[2], "yellow", yellowHome(), yellowRoute(), "B");
 
     }
     else if (event.data.includes("MOVEDHOME C")) {
 
         let a = event.data.split(" ");
-        movePieceFromHomeRemote(a[2], "blue", blueHome(), blueRoute());
+        movePieceFromHomeRemote(a[2], "blue", blueHome(), blueRoute(), "C");
 
     }
     else if (event.data.includes("MOVEDHOME D")) {
 
         let a = event.data.split(" ");
-        movePieceFromHomeRemote(a[2], "red", orangeHome(), orangeRoute());
+        movePieceFromHomeRemote(a[2], "red", orangeHome(), orangeRoute(), "D");
 
+    }
+
+    else if (event.data.includes("NMOVE A")) {
+        //movePieceRemote(cellID, color, route, playerID, dNumber)
+        let a = event.data.split(" ");
+        movePieceRemote(a[2], "green", greenRoute(), greenHome(), "A");
+    }
+    else if (event.data.includes("NMOVE B")) {
+        //movePieceRemote(cellID, color, route, playerID, dNumber)
+        let a = event.data.split(" ");
+        movePieceRemote(a[2], "yellow", yellowRoute(), yellowHome(), "B");
+    }
+    else if (event.data.includes("NMOVE C")) {
+        //movePieceRemote(cellID, color, route, playerID, dNumber)
+        let a = event.data.split(" ");
+        movePieceRemote(a[2], "blue", blueRoute(), blueHome(), "C");
+    }
+    else if (event.data.includes("NMOVE D")) {
+        //movePieceRemote(cellID, color, route, playerID, dNumber)
+        let a = event.data.split(" ");
+        movePieceRemote(a[2], "red", orangeRoute(), orangeHome(), "D");
     }
     
 }
@@ -361,11 +382,11 @@ function diceRoll(playerID) {
     }
     
 
-    if (diceNumber === 6) {
-            movesLeft +=1;
+    if (diceNumber === 6 && movesLeft === 1) {
+            movesLeft = 1;
     }
-    else {
-        movesLeft -= 1;
+    else if (diceNumber !== 6 && movesLeft === 1) {
+        movesLeft = 0;
     }
         
 }
@@ -383,7 +404,7 @@ function movePiece(cellID)
         restorePositions(thisPlayer.currentPosition1 + diceNumber, thisPlayer.currentPosition2, thisPlayer.currentPosition3, thisPlayer.currentPosition4);
         thisPlayer.currentPosition1 += diceNumber;
         if (movesLeft === 0) {
-            socket.send("Normal move"); 
+            socket.send("NMOVE " + thisPlayer.playerID + " " + cellID); 
         }
         return;
     }
@@ -393,7 +414,7 @@ function movePiece(cellID)
         restorePositions(thisPlayer.currentPosition1, thisPlayer.currentPosition2 + diceNumber, thisPlayer.currentPosition3, thisPlayer.currentPosition4);
         thisPlayer.currentPosition2 += diceNumber;
         if (movesLeft === 0) {
-            socket.send("Normal move"); 
+            socket.send("NMOVE " + thisPlayer.playerID + " " + cellID); 
         }
         return;
     }
@@ -403,7 +424,7 @@ function movePiece(cellID)
         restorePositions(thisPlayer.currentPosition1, thisPlayer.currentPosition2, thisPlayer.currentPosition3 + diceNumber, thisPlayer.currentPosition4);
         thisPlayer.currentPosition3 += diceNumber;
         if (movesLeft === 0) {
-            socket.send("Normal move"); 
+            socket.send("NMOVE " + thisPlayer.playerID + " " + cellID); 
         }
         return;
     }
@@ -413,35 +434,15 @@ function movePiece(cellID)
         restorePositions(thisPlayer.currentPosition1, thisPlayer.currentPosition2, thisPlayer.currentPosition3, thisPlayer.currentPosition4 + diceNumber);
         thisPlayer.currentPosition4 += diceNumber;
         if (movesLeft === 0) {
-            socket.send("Normal move"); 
+            socket.send("NMOVE " + thisPlayer.playerID + " " + cellID); 
         }
         return;
     }
 
     else {
-        console.log("return");
         return;
     }
     
-    
-
-    //movement animation
-    async function moveAnimation(currPos, prevPos) {
-        for (let i = prevPos; i <= currPos; i++) {
-
-            thisPlayer.route[i].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-            await sleep(100);
-    
-            thisPlayer.route[i].style.backgroundImage = ""; 
-        }
-        thisPlayer.route[currPos].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-        thisPlayer.route[prevPos].style.backgroundImage = ""; 
-        
-    };
-
-    
-    
-
     function restorePositions(pos1, pos2, pos3, pos4) {
         console.log("restoring positions");
         if (pos1 >= 0) {
@@ -465,6 +466,150 @@ function movePiece(cellID)
     
 }
 
+//movement animation
+async function moveAnimation(currPos, prevPos) {
+    for (let i = prevPos; i <= currPos; i++) {
+
+        thisPlayer.route[i].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
+        await sleep(100);
+
+        thisPlayer.route[i].style.backgroundImage = ""; 
+    }
+    thisPlayer.route[currPos].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
+    thisPlayer.route[prevPos].style.backgroundImage = ""; 
+    
+};
+
+function movePieceRemote(cellID, color, route, playerID, dNumber) {
+
+    if (playerID === OP1.playerID) {
+
+        if (document.getElementById(cellID) === route[OP1.currentPosition1]) {
+            moveAnimation(OP1.currentPosition1 + dNumber, OP1.currentPosition1);
+            restorePositions(OP1.currentPosition1 + dNumber, OP1.currentPosition2, OP1.currentPosition3, OP1.currentPosition4);
+            OP1.currentPosition1 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP1.currentPosition2]) {
+            moveAnimation(OP1.currentPosition2 + dNumber, OP1.currentPosition2);
+            restorePositions(OP1.currentPosition1, OP1.currentPosition2 + dNumber, OP1.currentPosition3, OP1.currentPosition4);
+            OP1.currentPosition2 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP1.currentPosition3]) {
+            moveAnimation(OP1.currentPosition3 + dNumber, OP1.currentPosition3);
+            restorePositions(OP1.currentPosition1, OP1.currentPosition2, OP1.currentPosition3 + dNumber, OP1.currentPosition4);
+            OP1.currentPosition3 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP1.currentPosition4]) {
+            moveAnimation(OP1.currentPosition4 + dNumber, OP1.currentPosition4);
+            restorePositions(OP1.currentPosition1, OP1.currentPosition2, OP1.currentPosition3, OP1.currentPosition4 + dNumber);
+            OP1.currentPosition4 += dNumber;
+        
+            return;
+        }
+    }
+    else if (playerID === OP2.playerID) {
+
+        if (document.getElementById(cellID) === route[OP2.currentPosition1]) {
+            moveAnimation(OP2.currentPosition1 + dNumber, OP2.currentPosition1);
+            restorePositions(OP2.currentPosition1 + dNumber, OP2.currentPosition2, OP2.currentPosition3, OP2.currentPosition4);
+            OP2.currentPosition1 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP2.currentPosition2]) {
+            moveAnimation(OP2.currentPosition2 + dNumber, OP2.currentPosition2);
+            restorePositions(OP2.currentPosition1, OP2.currentPosition2 + dNumber, OP2.currentPosition3, OP2.currentPosition4);
+            OP2.currentPosition2 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP2.currentPosition3]) {
+            moveAnimation(OP2.currentPosition3 + dNumber, OP2.currentPosition3);
+            restorePositions(OP2.currentPosition1, OP2.currentPosition2, OP2.currentPosition3 + dNumber, OP2.currentPosition4);
+            OP2.currentPosition3 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP2.currentPosition4]) {
+            moveAnimation(OP2.currentPosition4 + dNumber, OP2.currentPosition4);
+            restorePositions(OP2.currentPosition1, OP2.currentPosition2, OP2.currentPosition3, OP2.currentPosition4 + dNumber);
+            OP2.currentPosition4 += dNumber;
+        
+            return;
+        }
+
+    }
+    else if (playerID === OP3.playerID) {
+
+        if (document.getElementById(cellID) === route[OP3.currentPosition1]) {
+            moveAnimation(OP3.currentPosition1 + dNumber, OP3.currentPosition1);
+            restorePositions(OP3.currentPosition1 + dNumber, OP3.currentPosition2, OP3.currentPosition3, OP3.currentPosition4);
+            OP3.currentPosition1 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP3.currentPosition2]) {
+            moveAnimation(OP3.currentPosition2 + dNumber, OP3.currentPosition2);
+            restorePositions(OP3.currentPosition1, OP3.currentPosition2 + dNumber, OP3.currentPosition3, OP3.currentPosition4);
+            OP3.currentPosition2 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP3.currentPosition3]) {
+            moveAnimation(OP3.currentPosition3 + dNumber, OP3.currentPosition3);
+            restorePositions(OP3.currentPosition1, OP3.currentPosition2, OP3.currentPosition3 + dNumber, OP3.currentPosition4);
+            OP3.currentPosition3 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP3.currentPosition4]) {
+            moveAnimation(OP3.currentPosition4 + dNumber, OP3.currentPosition4);
+            restorePositions(OP3.currentPosition1, OP3.currentPosition2, OP3.currentPosition3, OP3.currentPosition4 + dNumber);
+            OP3.currentPosition4 += dNumber;
+        
+            return;
+        }
+
+    }
+    else if (playerID === OP4.playerID) {
+        if (document.getElementById(cellID) === route[OP4.currentPosition1]) {
+            moveAnimation(OP4.currentPosition1 + dNumber, OP4.currentPosition1);
+            restorePositions(OP4.currentPosition1 + dNumber, OP4.currentPosition2, OP4.currentPosition3, OP4.currentPosition4);
+            OP4.currentPosition1 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP4.currentPosition2]) {
+            moveAnimation(OP4.currentPosition2 + dNumber, OP4.currentPosition2);
+            restorePositions(OP4.currentPosition1, OP4.currentPosition2 + dNumber, OP4.currentPosition3, OP4.currentPosition4);
+            OP4.currentPosition2 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP4.currentPosition3]) {
+            moveAnimation(OP4.currentPosition3 + dNumber, OP4.currentPosition3);
+            restorePositions(OP4.currentPosition1, OP4.currentPosition2, OP4.currentPosition3 + dNumber, OP4.currentPosition4);
+            OP4.currentPosition3 += dNumber;
+        
+            return;
+        }
+        else if (document.getElementById(cellID) === route[OP4.currentPosition4]) {
+            moveAnimation(OP4.currentPosition4 + dNumber, OP4.currentPosition4);
+            restorePositions(OP4.currentPosition1, OP4.currentPosition2, OP4.currentPosition3, OP4.currentPosition4 + dNumber);
+            OP4.currentPosition4 += dNumber;
+        
+            return;
+        }
+
+    }
+}
+
 function movePieceFromHome(cellID) {
 
     if (diceNumber !== 6) {
@@ -481,19 +626,19 @@ function movePieceFromHome(cellID) {
     else if (document.getElementById(cellID) === thisPlayer.home[1]) {
         thisPlayer.home[1].style.backgroundImage = "";
         thisPlayer.route[1].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-        thisPlayer.currentPosition1 = 0;
+        thisPlayer.currentPosition2 = 0;
         socket.send("MOVEDHOME " + thisPlayer.playerID + " " + cellID);
     }
     else if (document.getElementById(cellID) === thisPlayer.home[2]) {
         thisPlayer.home[2].style.backgroundImage = "";
         thisPlayer.route[2].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-        thisPlayer.currentPosition1 = 0;
+        thisPlayer.currentPosition3 = 0;
         socket.send("MOVEDHOME " + thisPlayer.playerID + " " + cellID);
     }
     else if (document.getElementById(cellID) === thisPlayer.home[3]) {
         thisPlayer.home[3].style.backgroundImage = "";
         thisPlayer.route[3].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-        thisPlayer.currentPosition1 = 0;
+        thisPlayer.currentPosition4 = 0;
         socket.send("MOVEDHOME " + thisPlayer.playerID + " " + cellID);
     }
     
@@ -502,32 +647,94 @@ function movePieceFromHome(cellID) {
     }  
 }
 
-function movePieceFromHomeRemote(cellID, color, home, route) {
-    console.log("MOved piece remote: " + cellID);
+function movePieceFromHomeRemote(cellID, color, home, route, playerID) {
+
 
     if (document.getElementById(cellID) === home[0]) {
         
         home[0].style.backgroundImage = "";
         route[0].style.backgroundImage = `url("../images/${color}pawn.png")`;
+        if (playerID === OP1.playerID) {
+            OP1.currentPosition1 = 0;
+        }
+        else if (playerID === OP2.playerID) {
+            OP1.currentPosition2 = 0;
+        }
+        else if (playerID === OP3.playerID) {
+            OP1.currentPosition3 = 0;
+        }
+        else if (playerID === OP4.playerID) {
+            OP1.currentPosition4 = 0;
+        }
+
     } 
     else if (document.getElementById(cellID) === home[1]) {
         home[1].style.backgroundImage = "";
         route[1].style.backgroundImage = `url("../images/${color}pawn.png")`;
+        if (playerID === OP1.playerID) {
+            OP1.currentPosition1 = 0;
+        }
+        else if (playerID === OP2.playerID) {
+            OP1.currentPosition2 = 0;
+        }
+        else if (playerID === OP3.playerID) {
+            OP1.currentPosition3 = 0;
+        }
+        else if (playerID === OP4.playerID) {
+            OP1.currentPosition4 = 0;
+        }
     }
     else if (document.getElementById(cellID) === home[2]) {
         home[2].style.backgroundImage = "";
         route[2].style.backgroundImage = `url("../images/${color}pawn.png")`;
+        if (playerID === OP1.playerID) {
+            OP1.currentPosition1 = 0;
+        }
+        else if (playerID === OP2.playerID) {
+            OP1.currentPosition2 = 0;
+        }
+        else if (playerID === OP3.playerID) {
+            OP1.currentPosition3 = 0;
+        }
+        else if (playerID === OP4.playerID) {
+            OP1.currentPosition4 = 0;
+        }
     } 
     else if (document.getElementById(cellID) === home[3]) {
         home[3].style.backgroundImage = "";
         route[3].style.backgroundImage = `url("../images/${color}pawn.png")`;
+        if (playerID === OP1.playerID) {
+            OP1.currentPosition1 = 0;
+        }
+        else if (playerID === OP2.playerID) {
+            OP1.currentPosition2 = 0;
+        }
+        else if (playerID === OP3.playerID) {
+            OP1.currentPosition3 = 0;
+        }
+        else if (playerID === OP4.playerID) {
+            OP1.currentPosition4 = 0;
+        }
     } 
     else if (document.getElementById(cellID) === home[4]) {
         home[4].style.backgroundImage = "";
         route[4].style.backgroundImage = `url("../images/${color}pawn.png")`;
+        if (playerID === OP1.playerID) {
+            OP1.currentPosition1 = 0;
+        }
+        else if (playerID === OP2.playerID) {
+            OP1.currentPosition2 = 0;
+        }
+        else if (playerID === OP3.playerID) {
+            OP1.currentPosition3 = 0;
+        }
+        else if (playerID === OP4.playerID) {
+            OP1.currentPosition4 = 0;
+        }
     } 
-    console.log("No match");
 }
+
+
 
 function populateBoard(home, color) {
     home[0].style.backgroundImage = `url("../images/${color}pawn.png")`;

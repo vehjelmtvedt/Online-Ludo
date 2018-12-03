@@ -121,6 +121,12 @@ wss.on("connection", function connection(ws) {
                 gameObj.playerC.send(message + " A");
                 gameObj.playerD.send(message + " A");
             }
+            //message: NMOVE PLAYERID CELLID
+            else if (message.includes("NMOVE")) {
+                gameObj.playerB.send(message);
+                gameObj.playerC.send(message);
+                gameObj.playerD.send(message);
+            }
         }
         else if (con == gameObj.playerB) {
 
@@ -153,6 +159,12 @@ wss.on("connection", function connection(ws) {
                 gameObj.playerA.send(message + " B");
                 gameObj.playerC.send(message + " B");
                 gameObj.playerD.send(message + " B");
+            }
+            //message: NMOVE PLAYERID CELLID
+            else if (message.includes("NMOVE")) {
+                gameObj.playerA.send(message);
+                gameObj.playerC.send(message);
+                gameObj.playerD.send(message);
             }
 
         }
@@ -189,6 +201,12 @@ wss.on("connection", function connection(ws) {
                 gameObj.playerB.send(message + " C");
                 gameObj.playerD.send(message + " C");
             }
+            //message: NMOVE PLAYERID CELLID
+            else if (message.includes("NMOVE")) {
+                gameObj.playerA.send(message);
+                gameObj.playerB.send(message);
+                gameObj.playerD.send(message);
+            }
             
 
         }
@@ -214,6 +232,12 @@ wss.on("connection", function connection(ws) {
                 gameObj.playerB.send(message + " D");
                 gameObj.playerC.send(message + " D");
                 gameObj.playerA.send(message + " D");
+            }
+            //message: NMOVE PLAYERID CELLID
+            else if (message.includes("NMOVE")) {
+                gameObj.playerA.send(message);
+                gameObj.playerB.send(message);
+                gameObj.playerC.send(message);
             }
 
         }
