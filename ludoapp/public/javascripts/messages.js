@@ -8,6 +8,16 @@
     exports.C_PLAYER_TYPE_A = {
         type: exports.S_PLAYER_TYPE,
         data: null
+    }; 
+
+    /*
+    * Server to client: OP's is of type playerX
+    */
+
+    exports.S_OP_PLAYER_TYPE = "OP PLAYER TYPE";
+    exports.C_OP_PLAYER_TYPE = {
+        type: exports.S_OP_PLAYER_TYPE,
+        data: null
     };
 
     /*

@@ -43,18 +43,18 @@ game.prototype.addPlayer = function (p) {
         return "B";
     }
     else if (this.playerC == null) {
-        this.playerB = p;
-        return "B";
+        this.playerC = p;
+        return "C";
     }
     else if (this.playerD == null) {
-        this.playerB = p;
-        return "B";
+        this.playerD = p;
+        return "D";
     }
 };
 
 
 game.prototype.hasFourConnectedPlayers = function () {
-    return (this.gameState == "4 JOINED");
+    return (this.playerA != null && this.playerB != null && this.playerC != null && this.playerD != null);
 };
 
 module.exports = game;

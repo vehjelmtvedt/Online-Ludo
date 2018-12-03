@@ -2,7 +2,7 @@ var express = require("express");
 var http = require("http");
 var port = process.argv[2];
 var app = express();
-var game = require("./game");
+var Game = require("./game");
 var gameStatTracker = require("./stattracker");
 var websocket = require("ws");
 
@@ -24,7 +24,7 @@ const wss = new websocket.Server({ server });
 
 var websockets = {};
 
-var currentGame = new Gamepad(gameStatTracker.gamesInitialized++);
+var currentGame = new Game(gameStatTracker.gamesInitialized++);
 var connectionID = 0;
 
 wss.on("connection", function connection(ws) {
@@ -32,14 +32,45 @@ wss.on("connection", function connection(ws) {
     let con = ws;
     con.id = connectionID++;
     let playerID = currentGame.addPlayer(con);
+    
+    
+    
     websockets[con.id] = currentGame;
 
-    console.log("Player %s placed in game %s as %s", con.id, currentGame.id, playerType);
+    console.log("Player %s placed in game %s as %s", con.id, currentGame.id, playerID);
 
-    con.send(playerType);
+
+    //Send to client added which playerID it has. Send to all OP's that this player is added.
+    if (playerID === 'A') {
+        con.send(playerID);
+    }
+    else if (playerID === 'B') {
+        con.send(playerID);
+        currentGame.playerA.send("OP B");
+        currentGame.playerB.send("OP A");
+    }
+    else if (playerID === 'C') {
+        con.send(playerID);
+        currentGame.playerA.send("OP C");
+        currentGame.playerB.send("OP C");
+        currentGame.playerC.send("OP A");
+        currentGame.playerC.send("OP B");
+    }
+    else if (playerID === 'D') {
+        con.send(playerID);
+        currentGame.playerA.send("OP D");
+        currentGame.playerB.send("OP D");
+        currentGame.playerC.send("OP D");
+        currentGame.playerD.send("OP A");
+        currentGame.playerD.send("OP B");
+        currentGame.playerD.send("OP C");
+    }
 
     if (currentGame.hasFourConnectedPlayers()) {
-        currentGame = new Gamepad(gameStatTracker.gamesInitialized++);
+        
+        console.log("Game has started");
+        currentGame.playerA.send("turn");        
+        currentGame = new Game(gameStatTracker.gamesInitialized++);
     }
 
 
@@ -53,89 +84,141 @@ wss.on("connection", function connection(ws) {
 
     con.on("message", function incoming(message) {
 
-        let receivedMessage = JSON.parse(message);
+        
 
         let gameObj = websockets[con.id];
         
         //handle NO MOVE from client and communicate to all other players.
         if (con == gameObj.playerA) {
+            
 
-            if (receivedMessage.type = messages.C_NO_MOVE) {
-                console.log("Message received from client: No move is made")
-                var oMsg = JSON.stringify(messages.C_YOUR_TURN);
-                oMsg.data = "B";
-                
-
-                if (gameObj.hasFourConnectedPlayers()) {
+            if (message === "NO MOVE") {
+                console.log("Message received from client: No move is made: next player's turn")
+                gameObj.playerB.send("turn");
+            }
+            else if (message.includes("NAME")) {
+                if (gameObj.playerB !== null) {
                     gameObj.playerB.send(message);
-                    gameObj.playerB.send(oMsg);
-                    gameObj.playerC.send(message);
-                    gameObj.playerD.send(message);
 
+                    if (gameObj.playerC !== null) {
+                        gameObj.playerC.send(message);
+
+                        if (gameObj.playerD !== null) {
+                            gameObj.playerD.send(message);
+                        }
+                    }
                 }
             }
-
+            else if (message.includes("DICEROLL")) {
+                if (gameObj.hasFourConnectedPlayers()) {
+                    gameObj.playerB.send(message);
+                    gameObj.playerC.send(message);
+                    gameObj.playerD.send(message);
+                }
+            }
+            else if (message.includes("MOVEDHOME")) {
+                gameObj.playerB.send(message + " A");
+                gameObj.playerC.send(message + " A");
+                gameObj.playerD.send(message + " A");
+            }
         }
         else if (con == gameObj.playerB) {
 
-            if (receivedMessage.type = messages.C_NO_MOVE) {
-                console.log("Message received from client: No move is made")
-                var oMsg = JSON.stringify(messages.C_YOUR_TURN);
-                oMsg.data = "C";
+            if (message === "NO MOVE") {
+                console.log("Message received from client: No move is made: next player's turn")
+                gameObj.playerC.send("turn");
+            }
+            else if (message.includes("NAME")) {
+                if (gameObj.playerA !== null) {
+                    gameObj.playerA.send(message);
 
+                    if (gameObj.playerC !== null) {
+                        gameObj.playerC.send(message);
+
+                        if (gameObj.playerD !== null) {
+                            gameObj.playerD.send(message);
+                        }
+                    }
+                }
+                
+            }
+            else if (message.includes("DICEROLL")) {
                 if (gameObj.hasFourConnectedPlayers()) {
                     gameObj.playerA.send(message);
                     gameObj.playerC.send(message);
-                    gameObj.playerC.send(oMsg);
                     gameObj.playerD.send(message);
-
                 }
+            }
+            else if (message.includes("MOVEDHOME")) {
+                gameObj.playerA.send(message + " B");
+                gameObj.playerC.send(message + " B");
+                gameObj.playerD.send(message + " B");
             }
 
         }
         else if (con == gameObj.playerC) {
 
-            if (receivedMessage.type = messages.C_NO_MOVE) {
-                console.log("Message received from client: No move is made")
-                var oMsg = JSON.stringify(messages.C_YOUR_TURN);
-                oMsg.data = "D";
+            if (message === "NO MOVE") {
+                console.log("Message received from client: No move is made: next player's turn")
+                gameObj.playerD.send("turn");
+            }
+            else if (message.includes("NAME")) {
+                
+                if (gameObj.playerA !== null) {
+                    gameObj.playerA.send(message);
 
+                    if (gameObj.playerB !== null) {
+                        gameObj.playerB.send(message);
+
+                        if (gameObj.playerD !== null) {
+                            gameObj.playerD.send(message);
+                        }
+                    }
+                }
+                
+            }
+            else if (message.includes("DICEROLL")) {
                 if (gameObj.hasFourConnectedPlayers()) {
                     gameObj.playerA.send(message);
                     gameObj.playerB.send(message);
                     gameObj.playerD.send(message);
-                    gameObj.playerD.send(oMsg);
-
                 }
             }
+            else if (message.includes("MOVEDHOME")) {
+                gameObj.playerA.send(message + " C");
+                gameObj.playerB.send(message + " C");
+                gameObj.playerD.send(message + " C");
+            }
+            
 
         }
-        else if (con == gameObj.playerB) {
+        else if (con == gameObj.playerD) {
 
-            if (receivedMessage.type = messages.C_NO_MOVE) {
-                console.log("Message received from client: No move is made")
-                var oMsg = JSON.stringify(messages.C_YOUR_TURN);
-                oMsg.data = "A";
-
+            if (message === "NO MOVE") {
+                console.log("Message received from client: No move is made: next player's turn")
+                gameObj.playerA.send("turn");
+            }
+            else if (message.includes("NAME")) {
+                gameObj.playerA.send(message);
+                gameObj.playerB.send(message);
+                gameObj.playerC.send(message);
+            }
+            else if (message.includes("DICEROLL")) {
                 if (gameObj.hasFourConnectedPlayers()) {
                     gameObj.playerA.send(message);
-                    gameObj.playerA.send(oMsg);
                     gameObj.playerC.send(message);
-                    gameObj.playerD.send(message);
-
+                    gameObj.playerB.send(message);
                 }
+            }
+            else if (message.includes("MOVEDHOME")) {
+                gameObj.playerB.send(message + " D");
+                gameObj.playerC.send(message + " D");
+                gameObj.playerA.send(message + " D");
             }
 
         }
 
     });
-    
-
-
-
-
-
-
 });
 
 

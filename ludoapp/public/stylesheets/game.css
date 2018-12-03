@@ -86,24 +86,28 @@ section.gameinfo {
     height: 1310px;
 }
 
-.player1 {
+.playerA {
     background-color: orange;
     height: 310px; 
+    font-size: 30px;
 }
 
-.player2 {
+.playerB {
     background-color: blue;
     height: 310px;
+    font-size: 30px;
 }
 
-.player3 {
+.playerC {
     background-color: green;
     height: 310px;
+    font-size: 30px;
 }
 
-.player4 {
+.playerD {
     background-color: yellow;
     height: 310px;
+    font-size: 30px;
 }
 
 .playericon {
