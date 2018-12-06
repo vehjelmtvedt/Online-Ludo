@@ -33,14 +33,12 @@ wss.on("connection", function connection(ws) {
     con.id = connectionID++;
     let playerID = currentGame.addPlayer(con);
     
-    
-    
     websockets[con.id] = currentGame;
 
     console.log("Player %s placed in game %s as %s", con.id, currentGame.id, playerID);
 
 
-    //Send to client added which playerID it has. Send to all OP's that this player is added.
+    //Send to client added which playerID it has. Send to OP that this player is added.
     if (playerID === 'A') {
         con.send(playerID);
     }
@@ -49,24 +47,9 @@ wss.on("connection", function connection(ws) {
         currentGame.playerA.send("OP B");
         currentGame.playerB.send("OP A");
     }
-    else if (playerID === 'C') {
-        con.send(playerID);
-        currentGame.playerA.send("OP C");
-        currentGame.playerB.send("OP C");
-        currentGame.playerC.send("OP A");
-        currentGame.playerC.send("OP B");
-    }
-    else if (playerID === 'D') {
-        con.send(playerID);
-        currentGame.playerA.send("OP D");
-        currentGame.playerB.send("OP D");
-        currentGame.playerC.send("OP D");
-        currentGame.playerD.send("OP A");
-        currentGame.playerD.send("OP B");
-        currentGame.playerD.send("OP C");
-    }
-
-    if (currentGame.hasFourConnectedPlayers()) {
+    
+    //start game if it has two connected players
+    if (currentGame.hasTwoConnectedPlayers()) {
         
         console.log("Game has started");
         currentGame.playerA.send("turn");        
@@ -93,155 +76,70 @@ wss.on("connection", function connection(ws) {
             
 
             if (message === "NO MOVE") {
-                console.log("Message received from client: No move is made: next player's turn")
+                console.log("Message received from player A: No move is made: player B's turn")
                 gameObj.playerB.send("turn");
             }
             else if (message.includes("NAME")) {
-                if (gameObj.playerB !== null) {
-                    gameObj.playerB.send(message);
-
-                    if (gameObj.playerC !== null) {
-                        gameObj.playerC.send(message);
-
-                        if (gameObj.playerD !== null) {
-                            gameObj.playerD.send(message);
-                        }
-                    }
-                }
+                gameObj.playerB.send(message);
             }
+
             else if (message.includes("DICEROLL")) {
-                if (gameObj.hasFourConnectedPlayers()) {
+                if (gameObj.hasTwoConnectedPlayers()) {
                     gameObj.playerB.send(message);
-                    gameObj.playerC.send(message);
-                    gameObj.playerD.send(message);
                 }
             }
             else if (message.includes("MOVEDHOME")) {
-                gameObj.playerB.send(message + " A");
-                gameObj.playerC.send(message + " A");
-                gameObj.playerD.send(message + " A");
+                gameObj.playerB.send(message);
             }
+
             //message: NMOVE PLAYERID CELLID
             else if (message.includes("NMOVE")) {
+                console.log("Received from B: " + message);
                 gameObj.playerB.send(message);
-                gameObj.playerC.send(message);
-                gameObj.playerD.send(message);
+            }
+            else if (message.includes("turn")) {
+                gameObj.playerB.send(message);
+            }
+            else if (message.includes("WIN")) {
+                gameObj.playerB.send("WIN");
             }
         }
+
         else if (con == gameObj.playerB) {
-
-            if (message === "NO MOVE") {
-                console.log("Message received from client: No move is made: next player's turn")
-                gameObj.playerC.send("turn");
-            }
-            else if (message.includes("NAME")) {
-                if (gameObj.playerA !== null) {
-                    gameObj.playerA.send(message);
-
-                    if (gameObj.playerC !== null) {
-                        gameObj.playerC.send(message);
-
-                        if (gameObj.playerD !== null) {
-                            gameObj.playerD.send(message);
-                        }
-                    }
-                }
-                
-            }
-            else if (message.includes("DICEROLL")) {
-                if (gameObj.hasFourConnectedPlayers()) {
-                    gameObj.playerA.send(message);
-                    gameObj.playerC.send(message);
-                    gameObj.playerD.send(message);
-                }
-            }
-            else if (message.includes("MOVEDHOME")) {
-                gameObj.playerA.send(message + " B");
-                gameObj.playerC.send(message + " B");
-                gameObj.playerD.send(message + " B");
-            }
-            //message: NMOVE PLAYERID CELLID
-            else if (message.includes("NMOVE")) {
-                gameObj.playerA.send(message);
-                gameObj.playerC.send(message);
-                gameObj.playerD.send(message);
-            }
-
-        }
-        else if (con == gameObj.playerC) {
-
-            if (message === "NO MOVE") {
-                console.log("Message received from client: No move is made: next player's turn")
-                gameObj.playerD.send("turn");
-            }
-            else if (message.includes("NAME")) {
-                
-                if (gameObj.playerA !== null) {
-                    gameObj.playerA.send(message);
-
-                    if (gameObj.playerB !== null) {
-                        gameObj.playerB.send(message);
-
-                        if (gameObj.playerD !== null) {
-                            gameObj.playerD.send(message);
-                        }
-                    }
-                }
-                
-            }
-            else if (message.includes("DICEROLL")) {
-                if (gameObj.hasFourConnectedPlayers()) {
-                    gameObj.playerA.send(message);
-                    gameObj.playerB.send(message);
-                    gameObj.playerD.send(message);
-                }
-            }
-            else if (message.includes("MOVEDHOME")) {
-                gameObj.playerA.send(message + " C");
-                gameObj.playerB.send(message + " C");
-                gameObj.playerD.send(message + " C");
-            }
-            //message: NMOVE PLAYERID CELLID
-            else if (message.includes("NMOVE")) {
-                gameObj.playerA.send(message);
-                gameObj.playerB.send(message);
-                gameObj.playerD.send(message);
-            }
-            
-
-        }
-        else if (con == gameObj.playerD) {
 
             if (message === "NO MOVE") {
                 console.log("Message received from client: No move is made: next player's turn")
                 gameObj.playerA.send("turn");
             }
             else if (message.includes("NAME")) {
-                gameObj.playerA.send(message);
-                gameObj.playerB.send(message);
-                gameObj.playerC.send(message);
+                if (gameObj.playerA !== null) {
+                    gameObj.playerA.send(message);
+                }
+                
             }
             else if (message.includes("DICEROLL")) {
-                if (gameObj.hasFourConnectedPlayers()) {
+                if (gameObj.hasTwoConnectedPlayers()) {
                     gameObj.playerA.send(message);
-                    gameObj.playerC.send(message);
-                    gameObj.playerB.send(message);
+                    
                 }
             }
             else if (message.includes("MOVEDHOME")) {
-                gameObj.playerB.send(message + " D");
-                gameObj.playerC.send(message + " D");
-                gameObj.playerA.send(message + " D");
+                gameObj.playerA.send(message);
             }
             //message: NMOVE PLAYERID CELLID
             else if (message.includes("NMOVE")) {
+                console.log("Received from A: " + message);
                 gameObj.playerA.send(message);
-                gameObj.playerB.send(message);
-                gameObj.playerC.send(message);
+            }
+            else if (message.includes("turn")) {
+                gameObj.playerA.send(message);
+            }
+            else if (message.includes("WIN")) {
+                gameObj.playerB.send("WIN");
             }
 
         }
-
+        
     });
 });
 
