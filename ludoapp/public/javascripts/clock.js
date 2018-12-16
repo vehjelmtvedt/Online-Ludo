@@ -19,5 +19,5 @@ setInterval(function() {
 
   var currentTimeString = minutes + ":" + seconds;
 
-  $('section.timeelapsed h3').text("Time elapsed: " + currentTimeString);
+  $('section.timeelapsed h3').text(currentTimeString);
 }, 1000);

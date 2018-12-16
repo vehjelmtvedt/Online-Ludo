@@ -9,6 +9,8 @@ function setName(playerID, name) {
     return name;
 }
 
+var positionArray
+
 function Player(nameIn, colorIn, routeIn, homeIn, playerIDIn, currentPosition1In, currentPosition2In, currentPosition3In, currentPosition4In) {
     return {
         name: nameIn,
@@ -172,7 +174,11 @@ socket.onmessage = function(event){
         alert("You lost");
         yourTurn = false;
     }
-    
+    else if (event.data.includes("restore")) {
+        console.log("restore received");
+        
+    }
+     
 }
 
 //routes, one route is assigned to each player
@@ -275,6 +281,7 @@ function diceRoll() {
 
 function movePiece(cellID)
 {
+    console.log("Cell " + cellID + "was clicked");
     if (!yourTurn) {
         return;
     }
@@ -282,12 +289,12 @@ function movePiece(cellID)
         return;
     }
 
-    
-    
-    
     if (document.getElementById(cellID) === thisPlayer.route[thisPlayer.currentPosition1]) {
         if (thisPlayer.currentPosition1 + diceNumber > thisPlayer.route.length) {
             yourTurn = true;
+            diceRolled = true;
+            yourTurn = true;
+            return;
         }
         else if (thisPlayer.currentPosition1 + diceNumber === thisPlayer.route.length) {
             moveAnimation(thisPlayer.currentPosition1 + diceNumber, thisPlayer.currentPosition1, thisPlayer.playerID);
@@ -295,8 +302,9 @@ function movePiece(cellID)
             socket.send("NMOVE " + thisPlayer.playerID + " " + cellID + " " + diceNumber); 
             thisPlayer.score++;
             if (score === 4) {
-                //congrats you win
-
+                alert("Player " + thisPlayer.name + " won the game");
+                socket.send(thisPlayer.playerID + " WIN");
+                yourTurn = false;
             }
             else {
                 if (diceNumber === 6) {
@@ -333,6 +341,9 @@ function movePiece(cellID)
 
     else if (document.getElementById(cellID) === thisPlayer.route[thisPlayer.currentPosition2]) {
         if (thisPlayer.currentPosition2 + diceNumber > thisPlayer.route.length) {
+            yourTurn = true;
+            diceRolled = true;
+            yourTurn = true;
             return;
         }
         else if (thisPlayer.currentPosition2 + diceNumber === thisPlayer.route.length) {
@@ -341,8 +352,9 @@ function movePiece(cellID)
             socket.send("NMOVE " + thisPlayer.playerID + " " + cellID + " " + diceNumber); 
             thisPlayer.score++;
             if (score === 4) {
-                //congrats you win
-
+                alert("Player " + thisPlayer.name + " won the game");
+                socket.send(thisPlayer.playerID + " WIN");
+                yourTurn = false;
             }
             else {
                 if (diceNumber === 6) {
@@ -359,8 +371,8 @@ function movePiece(cellID)
                 return; 
             }
         }
-        moveAnimation(thisPlayer.currentPosition1 + diceNumber, thisPlayer.currentPosition1, thisPlayer.playerID);
-        thisPlayer.currentPosition1 += diceNumber;
+        moveAnimation(thisPlayer.currentPosition2 + diceNumber, thisPlayer.currentPosition2, thisPlayer.playerID);
+        thisPlayer.currentPosition2 += diceNumber;
         socket.send("NMOVE " + thisPlayer.playerID + " " + cellID + " " + diceNumber); 
 
         if (diceNumber === 6) {
@@ -379,6 +391,9 @@ function movePiece(cellID)
 
     else if (document.getElementById(cellID) === thisPlayer.route[thisPlayer.currentPosition3]) {
         if (thisPlayer.currentPosition3 + diceNumber > thisPlayer.route.length) {
+            yourTurn = true;
+            diceRolled = true;
+            yourTurn = true;
             return;
         }
         else if (thisPlayer.currentPosition3 + diceNumber === thisPlayer.route.length) {
@@ -387,8 +402,9 @@ function movePiece(cellID)
             socket.send("NMOVE " + thisPlayer.playerID + " " + cellID + " " + diceNumber); 
             thisPlayer.score++;
             if (score === 4) {
-                //congrats you win
-
+                alert("Player " + thisPlayer.name + " won the game");
+                socket.send(thisPlayer.playerID + " WIN");
+                yourTurn = false;
             }
             else {
                 if (diceNumber === 6) {
@@ -405,8 +421,8 @@ function movePiece(cellID)
                 return; 
             }
         }
-        moveAnimation(thisPlayer.currentPosition1 + diceNumber, thisPlayer.currentPosition1, thisPlayer.playerID);
-        thisPlayer.currentPosition1 += diceNumber;
+        moveAnimation(thisPlayer.currentPosition3 + diceNumber, thisPlayer.currentPosition3, thisPlayer.playerID);
+        thisPlayer.currentPosition3 += diceNumber;
         socket.send("NMOVE " + thisPlayer.playerID + " " + cellID + " " + diceNumber); 
 
         if (diceNumber === 6) {
@@ -425,6 +441,9 @@ function movePiece(cellID)
 
     else if (document.getElementById(cellID) === thisPlayer.route[thisPlayer.currentPosition4]) {
         if (thisPlayer.currentPosition4 + diceNumber > thisPlayer.route.length) {
+            yourTurn = true;
+            diceRolled = true;
+            yourTurn = true;
             return;
         }
         else if (thisPlayer.currentPosition4 + diceNumber === thisPlayer.route.length) {
@@ -454,8 +473,8 @@ function movePiece(cellID)
                 return; 
             }
         }
-        moveAnimation(thisPlayer.currentPosition1 + diceNumber, thisPlayer.currentPosition1, thisPlayer.playerID);
-        thisPlayer.currentPosition1 += diceNumber;
+        moveAnimation(thisPlayer.currentPosition4 + diceNumber, thisPlayer.currentPosition4, thisPlayer.playerID);
+        thisPlayer.currentPosition4 += diceNumber;
         socket.send("NMOVE " + thisPlayer.playerID + " " + cellID + " " + diceNumber); 
 
         if (diceNumber === 6) {
@@ -481,8 +500,8 @@ function movePiece(cellID)
 async function moveAnimation(currPos, prevPos, playerID) {
     let color;
     let localRoute;
-    currPos = parseInt(currPos);
-    prevPos = parseInt(prevPos);
+    currPos = parseInt(currPos, 10);
+    prevPos = parseInt(prevPos, 10);
     
     if (playerID === "A") {
         color = "green";
@@ -495,56 +514,58 @@ async function moveAnimation(currPos, prevPos, playerID) {
     
 
     for (let i = prevPos; i <= currPos; i++) {
+        
+        let checkString = "";
 
-        localRoute[i].style.backgroundImage = `url("../images/${color}pawn.png")`;
-        await sleep(100);
+        if (thisPlayer.currentPosition1 >= 0) {
+            checkString += thisPlayer.route[thisPlayer.currentPosition1].style.backgroundImage;             
+        }
+        if (thisPlayer.currentPosition2 >= 0) {
+            checkString += thisPlayer.route[thisPlayer.currentPosition2].style.backgroundImage;             
 
-        localRoute[i].style.backgroundImage = ""; 
+        }
+        if (thisPlayer.currentPosition3 >= 0) {
+            checkString += thisPlayer.route[thisPlayer.currentPosition3].style.backgroundImage;             
 
+        }
+        if (thisPlayer.currentPosition4 >= 0) {
+            checkString += thisPlayer.route[thisPlayer.currentPosition4].style.backgroundImage;             
+        }
+        if (OP1.currentPosition1 >= 0) {
+            checkString += OP1.route[OP1.currentPosition1].style.backgroundImage;             
+        }
+        if (OP1.currentPosition2 >= 0) {
+            checkString += OP1.route[OP1.currentPosition2].style.backgroundImage;             
+
+        }
+        if (OP1.currentPosition3 >= 0) {
+            checkString += OP1.route[OP1.currentPosition3].style.backgroundImage;             
+
+        }
+        if (OP1.currentPosition4 >= 0) {
+            checkString += OP1.route[OP1.currentPosition4].style.backgroundImage;             
+        }
+
+        if (checkString !== "") {
+            await sleep(100);
+        }
+
+        
+        else {
+            localRoute[i].style.backgroundImage = `url("../images/${color}pawn.png")`;
+            await sleep(100);
+    
+            localRoute[i].style.backgroundImage = "";        
+        }
     }
     localRoute[currPos].style.backgroundImage = `url("../images/${color}pawn.png")`;
     localRoute[prevPos].style.backgroundImage = ""; 
     
     
-    if (playerID === thisPlayer.playerID) {
-        restorePositions();
-    }
-    else if (playerID === OP1.playerID) {
-        restorePositionsOP();
-    }
+    
 };
 
 
-async function restorePositions() {
-
-    if (thisPlayer.currentPosition1 >= 0) {
-        thisPlayer.route[thisPlayer.currentPosition1].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-    }
-    else if (thisPlayer.currentPosition2 >= 0) {
-        thisPlayer.route[thisPlayer.currentPosition2].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-    }
-    else if (thisPlayer.currentPosition3 >= 0) {
-        thisPlayer.route[thisPlayer.currentPosition3].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-    }
-    else if (thisPlayer.currentPosition4 >= 0) {
-        thisPlayer.route[thisPlayer.currentPosition4].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-    }
-}
-async function restorePositionsOP() {
-
-    if (OP1.currentPosition1 >= 0) {
-        OP1.route[OP1.currentPosition1].style.backgroundImage = `url("../images/${OP1.color}pawn.png")`;
-    }
-    else if (OP1.currentPosition2 >= 0) {
-        OP1.route[OP1.currentPosition2].style.backgroundImage = `url("../images/${OP1.color}pawn.png")`;
-    }
-    else if (OP1.currentPosition3 >= 0) {
-        OP1.route[OP1.currentPosition3].style.backgroundImage = `url("../images/${OP1.color}pawn.png")`;
-    }
-    else if (OP1.currentPosition4 >= 0) {
-        OP1.route[OP1.currentPosition4].style.backgroundImage = `url("../images/${OP1.color}pawn.png")`;
-    }
-}
 
 
 function movePieceFromHome(cellID) {
@@ -663,6 +684,92 @@ function populateBoard(home, color) {
     home[2].style.backgroundImage = `url("../images/${color}pawn.png")`;
     home[3].style.backgroundImage = `url("../images/${color}pawn.png")`;
 };
+
+
+
+// setInterval(function() {
+
+//     for (let i = 0; i < thisPlayer.route.length; i++) {
+
+//         //check current Position of thisPlayer  
+//         if (thisPlayer.route[i].style.backgroundImage !== "" && 
+//         thisPlayer.currentPosition1 !== i && thisPlayer.currentPosition2 !== i 
+//         && thisPlayer.currentPosition3 !== i && thisPlayer.currentPosition4 !== i) {
+
+//             thisPlayer.route[i].style.backgroundImage = "";
+//         }
+        
+//         else if (thisPlayer.route[i].style.backgroundImage === "" && (thisPlayer.currentPosition1 === i
+//             || thisPlayer.currentPosition2 === i || thisPlayer.currentPosition3 === i || thisPlayer.currentPosition4 === i)) {
+//             thisPlayer.route[i].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
+//         }
+
+
+
+//         //check current position of OP1.
+//         if (OP1.route[i].style.backgroundImage !== "" && 
+//         OP1.currentPosition1 !== i && OP1.currentPosition2 !== i 
+//         && OP1.currentPosition3 !== i && OP1.currentPosition4 !== i) {
+
+//             OP1.route[i].style.backgroundImage = "";
+//         }
+
+//         else if (OP1.route[i].style.backgroundImage === "" && (OP1.currentPosition1 === i
+//             || OP1.currentPosition2 === i || OP1.currentPosition3 === i || OP1.currentPosition4 === i)) {
+//             OP1.route[i].style.backgroundImage = `url("../images/${OP1.color}pawn.png")`;
+//         }
+
+//     }
+
+    
+// }, 2000);
+
+
+
+
+// COOKIES
+
+function setCookie(cname, cvalue, visits) {
+    let counter = "counter=" + String(visits);
+    console.log(counter);
+    document.cookie = cname + "=" + cvalue + ";" + counter + ";path=/";
+}
+
+
+function getCookie(CookieName) {
+    var name = CookieName + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
+  function checkCookie() {
+    var user = getCookie("username");
+    var counter = getCookie("counter");
+    console.log(counter);
+    
+    if (user != "") {
+      alert("Welcome again " + user + " you have logged on this site " + counter + " times");
+      counter++;
+      setCookie("username", user, "counter");
+    } else {
+      user = prompt("Please enter your name:", "");
+      if (user != "" && user != null) {
+        setCookie("username", user, 1);
+      }
+    }
+  }
+
+
 
 
 

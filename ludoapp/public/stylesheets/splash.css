@@ -2,15 +2,21 @@
 
 body {
     background-color: rgb(192, 227, 28);
-    width: 1366px;
-    height: 768px;
+    width: 100%;
+}
+
+ul {
+    list-style-type: none;;
+}
+
+main {
+    width: 100%;
+    
 }
 
 a {
     text-decoration: none;
 }
-
-/* Header section */
 
 section.logosection {
     float: left;
@@ -33,7 +39,7 @@ section.timeelapsed {
 
 section.timeelapsed h3 {
     position: absolute;
-    font-family: 'Pacifico', cursive;;
+    font-family: 'Pacifico', cursive;
     bottom: 0;
     left: 0;
     right: 0;

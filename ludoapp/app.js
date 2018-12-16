@@ -53,6 +53,8 @@ wss.on("connection", function connection(ws) {
         
         console.log("Game has started");
         currentGame.playerA.send("turn");        
+        currentGame.playerA.send("restorePositions");
+        currentGame.playerB.send("restorePositions");
         currentGame = new Game(gameStatTracker.gamesInitialized++);
     }
 
@@ -135,7 +137,7 @@ wss.on("connection", function connection(ws) {
                 gameObj.playerA.send(message);
             }
             else if (message.includes("WIN")) {
-                gameObj.playerB.send("WIN");
+                gameObj.playerA.send("WIN");
             }
 
         }
