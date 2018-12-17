@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/splash.css">
     <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Acme|Pacifico|Unlock" rel="stylesheet">
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
 </head>
 <body>
 
@@ -39,10 +40,36 @@
             <div class="statstext">
                 <h3>Statistics</h3>
             </div>
-            
-            
-            
+
+            <div class="slideshow"><img id="statsimage" src="/images/statsimage.png"></div>
+            <div class="slideshow"><p><%= gamesInitialized %> 
+                <%if (gamesInitialized != 1) { %>
+                    games
+                <% } else { %>
+                    game
+                <% } %>
+                initialized 
+                
+                 <br> </p></div>
+            <div class="slideshow"><p>Completed games: <br> <%= gamesCompleted %> </p></div>
+            <div class="slideshow"><p>Aborted Games: <br> <%= gamesAborted %></p></div>
+            <div class="navbuttons">
+                <img onclick="myShow.previous()" id="navbuttons1" src="images/arrow_stats.png">
+                <img onclick="myShow.next()" id="navbuttons2" src="images/arrow_stats.png"> <!---Rotate 180 degrees-->
+            </div>
+
+            <script>myShow = w3.slideshow(".slideshow", 0);</script>
         </div>
+
+        
+
+        <script>w3.slideshow(".mystats");</script>
+
+
+
+
+
+
 
         <div class="howto">
             <div class="howtotext">

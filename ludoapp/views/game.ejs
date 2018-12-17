@@ -16,7 +16,6 @@
         <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Acme|Pacifico|Unlock" rel="stylesheet">
-            
     </head>
 	
 </head>
@@ -28,7 +27,7 @@
         </section>
         
         <section class="timeelapsed">
-            <h1> <a href="game.html"> LUDO </a></h1>
+            <h1> <a href="/"> LUDO </a></h1>
             <h3> 00:00</h3> 
         </section> 
         <section class="temp">
@@ -36,7 +35,7 @@
         </section>
     </header>
 
-    <main>
+    <main id="main">
 
             <section class="gameboard">
             
@@ -317,25 +316,23 @@
                     <img id="diceiconB" src="images/2.png" onclick="diceRoll()">
                 </section>
             </section>
+            <button id="fs-toggle" onclick="openFullscreen()">Fullscreen</button>
     
-            <section class="playerC">
-                <h3 id="playerC">Player 3</h3>
-                <section class="diceandplayer">
-                    <img class="playericon" src="images/playericon.png">
-                    <img id="diceiconC" src="images/3.png" onclick="diceRoll()">
-                </section>
-            </section>
-                
-                
-            <section class="playerD">
-                <h3 id="playerD">Player 4</h3>
-                <section class="diceandplayer">
-                    <img class="playericon" src="images/playericon.png">
-                    <img id="diceiconD" src="images/4.png" onclick="diceRoll()">
-                </section>
-            </section>
         </section>
+
+        
     </main>
+    
+    <script>
+        function myFunction(x) {
+          if (x.matches) { // If media query matches
+            alert("You should resize your window! This game is optimal for window-size larger than 1100px");
+              } 
+        }
+        var x = window.matchMedia("(max-width: 1085px)")
+        myFunction(x) 
+        x.addListener(myFunction) 
+    </script>
     
     
 </body>

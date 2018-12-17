@@ -8,8 +8,8 @@
 .cell {
     border: 3px solid #e6e6e6;
     border-radius: 10px;
-    width: 65px;
-    height: 65px;
+    width: 35px;
+    height: 35px;
     display: inline-block;
     margin: 3px;
     vertical-align: top;

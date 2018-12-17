@@ -3,7 +3,7 @@ var http = require("http");
 var port = process.argv[2];
 var app = express();
 var Game = require("./game");
-var gameStatTracker = require("./stattracker");
+var gameStatus = require("./stattracker");
 var websocket = require("ws");
 
 app.set("view engine", "ejs");
@@ -11,9 +11,9 @@ app.use(express.static(__dirname + "/public"));
 
 
 //TODO: move to routes/index
-app.get("/", (req, res) => {
-    res.render("splash.ejs");
-});
+app.get('/', (req, res) => {
+    res.render('splash.ejs', { gamesInitialized: gameStatus.gamesInitialized, gamesCompleted: gameStatus.gamesCompleted, gamesAborted: gameStatus.gamesAborted });
+})
 
 app.get("/play", (req, res) => {
     res.render("game.ejs");
@@ -24,7 +24,7 @@ const wss = new websocket.Server({ server });
 
 var websockets = {};
 
-var currentGame = new Game(gameStatTracker.gamesInitialized++);
+var currentGame = new Game(gameStatus.gamesInitialized++);
 var connectionID = 0;
 
 wss.on("connection", function connection(ws) {
@@ -55,7 +55,7 @@ wss.on("connection", function connection(ws) {
         currentGame.playerA.send("turn");        
         currentGame.playerA.send("restorePositions");
         currentGame.playerB.send("restorePositions");
-        currentGame = new Game(gameStatTracker.gamesInitialized++);
+        currentGame = new Game(gameStatus.gamesInitialized++);
     }
 
 
@@ -104,6 +104,7 @@ wss.on("connection", function connection(ws) {
             }
             else if (message.includes("WIN")) {
                 gameObj.playerB.send("WIN");
+                gameStatus.gamesCompleted++;
             }
         }
 
@@ -138,6 +139,7 @@ wss.on("connection", function connection(ws) {
             }
             else if (message.includes("WIN")) {
                 gameObj.playerA.send("WIN");
+                gameStatus.gamesCompleted++;
             }
 
         }

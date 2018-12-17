@@ -69,7 +69,7 @@ section.timeelapsed h3::before {
 
 section.timeelapsed h3::after {
     content: " im here bro";
-    font-size: 20px;
+    font-size: 23px;
 }
 
 
@@ -141,7 +141,7 @@ div.statistics {
     margin: 0 auto;
     background-color: whitesmoke;
     width: 30%;
-    height: 420px;
+    height: 480px;
 }
 
 div.howto {
@@ -264,4 +264,12 @@ div.navbuttons {
 
 #questionmark:hover {
     transform: scale(1.3);
+}
+
+.slideshow {
+    max-width:200px;
+    margin: auto;
+    display: block;
+    height: 150px;
+    
 }

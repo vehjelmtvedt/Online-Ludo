@@ -2,6 +2,24 @@ var diceNumber = -1;
 var yourTurn = false;
 var diceRolled = true;
 
+
+function openFullscreen() {
+    var elem = document.getElementById("main");
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+      elem.msRequestFullscreen();
+    }
+}
+
+
+
+
+
 //set name and change title
 function setName(playerID, name) {
     console.log("Set name for player " + playerID);
@@ -9,7 +27,7 @@ function setName(playerID, name) {
     return name;
 }
 
-var positionArray
+
 
 function Player(nameIn, colorIn, routeIn, homeIn, playerIDIn, currentPosition1In, currentPosition2In, currentPosition3In, currentPosition4In) {
     return {
@@ -260,8 +278,16 @@ function diceRoll() {
     }
 
     let diceResult = Math.floor(Math.random()*6+1);
+    let diceResult2 = Math.floor(Math.random()*6+1);
 
-    diceNumber = diceResult;
+    if (diceResult === 6 || diceResult2 === 6) {
+        diceNumber = 6;
+    }
+    else {
+        diceNumber = diceResult;
+    }
+
+    
     console.log("You rolled: " + diceNumber);
     socket.send("DICEROLL " + thisPlayer.playerID + diceResult);
 
@@ -687,60 +713,21 @@ function populateBoard(home, color) {
 
 
 
-// setInterval(function() {
-
-//     for (let i = 0; i < thisPlayer.route.length; i++) {
-
-//         //check current Position of thisPlayer  
-//         if (thisPlayer.route[i].style.backgroundImage !== "" && 
-//         thisPlayer.currentPosition1 !== i && thisPlayer.currentPosition2 !== i 
-//         && thisPlayer.currentPosition3 !== i && thisPlayer.currentPosition4 !== i) {
-
-//             thisPlayer.route[i].style.backgroundImage = "";
-//         }
-        
-//         else if (thisPlayer.route[i].style.backgroundImage === "" && (thisPlayer.currentPosition1 === i
-//             || thisPlayer.currentPosition2 === i || thisPlayer.currentPosition3 === i || thisPlayer.currentPosition4 === i)) {
-//             thisPlayer.route[i].style.backgroundImage = `url("../images/${thisPlayer.color}pawn.png")`;
-//         }
-
-
-
-//         //check current position of OP1.
-//         if (OP1.route[i].style.backgroundImage !== "" && 
-//         OP1.currentPosition1 !== i && OP1.currentPosition2 !== i 
-//         && OP1.currentPosition3 !== i && OP1.currentPosition4 !== i) {
-
-//             OP1.route[i].style.backgroundImage = "";
-//         }
-
-//         else if (OP1.route[i].style.backgroundImage === "" && (OP1.currentPosition1 === i
-//             || OP1.currentPosition2 === i || OP1.currentPosition3 === i || OP1.currentPosition4 === i)) {
-//             OP1.route[i].style.backgroundImage = `url("../images/${OP1.color}pawn.png")`;
-//         }
-
-//     }
-
-    
-// }, 2000);
-
-
 
 
 // COOKIES
 
-function setCookie(cname, cvalue, visits) {
-    let counter = "counter=" + String(visits);
-    console.log(counter);
-    document.cookie = cname + "=" + cvalue + ";" + counter + ";path=/";
+function setCookie(cname, cvalue) {
+    document.cookie = cname + "=" + cvalue + ";" + ";path=/";
 }
+  
 
-
-function getCookie(CookieName) {
-    var name = CookieName + "=";
+function getCookie(cname) {
+    var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
+    
+    for(var i = 0; i < ca.length; i++) {
       var c = ca[i];
       while (c.charAt(0) == ' ') {
         c = c.substring(1);
@@ -749,25 +736,32 @@ function getCookie(CookieName) {
         return c.substring(name.length, c.length);
       }
     }
-    return "";
-  }
+    return "0";
+}
 
-  function checkCookie() {
-    var user = getCookie("username");
-    var counter = getCookie("counter");
-    console.log(counter);
-    
-    if (user != "") {
-      alert("Welcome again " + user + " you have logged on this site " + counter + " times");
-      counter++;
-      setCookie("username", user, "counter");
+
+function checkCookie() {
+    var counter = getCookie("visits");
+    console.table(counter);
+    let temp = parseInt(counter[0]);
+    console.log(temp);
+    if (temp != 0) {
+      alert("You have visited " + temp + " times");
+      temp++;
+      setCookie("visits", temp);
+
+
     } else {
-      user = prompt("Please enter your name:", "");
-      if (user != "" && user != null) {
-        setCookie("username", user, 1);
-      }
+       if (temp == 0) {
+           console.log("set cookie");
+           setCookie("visits", "1");
+       }
     }
-  }
+}
+
+
+
+
 
 
 

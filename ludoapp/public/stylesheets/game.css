@@ -1,3 +1,37 @@
+/* Media query */
+
+/* @media screen and (max-width: 800px) {
+    body {
+        background-color: red !important;
+        display: none;
+    }
+} */
+
+button::after {
+    content: " -- click here";
+    font-size: 15px;
+}
+
+
+button {
+    float: left;
+    width: 100%;
+    height: 50px;
+    background-color: orange;
+    margin-top: 30px;
+    box-shadow: none;
+    color: white;
+    font-size: 19px;
+    border-radius: 10%;
+    font-family: 'Fjalla One', sans-serif;
+    border: 1px solid black;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background-color: #ffc266;
+}
+
 /* General */
 
 body {
@@ -16,22 +50,23 @@ main {
 
 /* Header section */
 
-section.logosection {
+.logosection {
     float: left;
     width: 33%;
-    height: 300px; 
+    height: 200px; 
 }
 
 #logo {
-    max-width: 300px;
+    max-width: 200px;
 }
 
 section.timeelapsed {
     display: inline-block;
     margin: auto;
     width: 33%;
-    height: 300px;
+    height: 275px;
     position: relative;
+    
 }
 
 section.timeelapsed h3 {
@@ -53,7 +88,7 @@ section.timeelapsed h3 {
 
 section.timeelapsed h3::before {
     content: " Time Elapsed ";
-    font-size: 40px;
+    font-size: 30px;
     font-family: 'Pacifico', cursive;
     color:  #DC143C;
 }
@@ -135,56 +170,47 @@ section.gameinfo {
     
     width: 20%;
     float: left;
-    background: gray;
     display: table-cell;
     vertical-align: middle;
     text-align: center;
-    height: 1310px;
+    height: 900px;
 }
 
 .playerA {
-    background-color: orange;
-    height: 310px; 
+    background-color: green;
+    height: 220px; 
     font-size: 30px;
+    border-radius: 7%;
+    font-family: 'Fjalla One', sans-serif;
+    color: white;
 }
 
 .playerB {
     background-color: blue;
-    height: 310px;
+    height: 220px;
     font-size: 30px;
+    border-radius: 7%;
+    font-family: 'Fjalla One', sans-serif;
+    color: white;
 }
 
-.playerC {
-    background-color: green;
-    height: 310px;
-    font-size: 30px;
-}
 
-.playerD {
-    background-color: yellow;
-    height: 310px;
-    font-size: 30px;
-}
 
 .playericon {
-    width: 150px;
+    width: 100px;
 }
 
 #diceiconA {
-    width: 150px;
+    width: 100px;
 }
 
 #diceiconB {
-    width: 150px;
+    width: 100px;
 }
 
-#diceiconC {
-    width: 150px;
-}
 
-#diceiconD {
-    width: 150px;
-}
+
+
 section.gameboard {
     width: 70%;
     float: left;
@@ -194,8 +220,8 @@ section.gameboard {
 }
 
 div {
-    width: 65px;
-    height: 65px;
+    width: 35px;
+    height: 35px;
     border:1px solid white;;
     display: inline-block;
     border-radius: 7px;
@@ -204,9 +230,7 @@ div {
 
 /*Styling grid*/
 
-#c7-1 {
-    background-image: "url('/Users/vetle/Desktop/Web and Database Technology/Ludo-Project/ludoapp/public/images/figurine_blue.jpg')";
-}
+
 
 /*Row 1*/
 
