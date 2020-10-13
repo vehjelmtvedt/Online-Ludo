@@ -1,6 +1,6 @@
 var express = require("express");
 var http = require("http");
-var port = process.argv[2];
+var port = process.env.PORT || 5000;
 var app = express();
 var Game = require("./game");
 var gameStatus = require("./stattracker");
